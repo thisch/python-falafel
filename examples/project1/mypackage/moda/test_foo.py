@@ -11,12 +11,12 @@ class MyFooTest(TestBase):
 
     def test_warning(self):
         self.log.warning("hello this is a test")
-        self.log.error("blabbla")
+        self.log.error("blabla")
         self.log.debug("not shown in summary")
 
     def test_warning_andexception(self):
         self.log.warning("hello this is a test")
-        self.log.error("blabbla")
+        self.log.error("blabla")
         self.log.debug("not shown in summary")
         self.assertTrue(False)
 
