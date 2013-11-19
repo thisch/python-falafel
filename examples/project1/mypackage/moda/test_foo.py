@@ -1,4 +1,3 @@
-import numpy as np
 import unittest
 import logging
 
@@ -22,7 +21,6 @@ class MyFooTest(TestBase):
         self.assertTrue(False)
 
     def test_lala(self):
-        a = np.array([3, 2, 5])
         self.log.info("TESTLOG in test_lala")
         print "MSG using 'print'"
         tlogger = logging.getLogger('pyspu')
@@ -32,7 +30,13 @@ class MyFooTest(TestBase):
         self.log.debug("TESTLOG after log\nmultiline stuff\nmore lines")
         time.sleep(0.5)
 
-        self.assertEqual(a.size, 4)
+        try:
+            import numpy as np
+        except ImportError:
+            pass
+        else:
+            a = np.array([3, 2, 5])
+            self.assertEqual(a.size, 4)
 
     @interactive
     def test_blub(self):
@@ -42,22 +46,25 @@ class MyFooTest(TestBase):
         self.comp(a)
 
 
-# skip the following class
-# should -L  show this test ??
 @unittest.skip("skip class")
 class MySkipTest(TestBase):
     def comp(self, x):
         self.assertEqual(x, 4)
 
     def test_lu(self):
-        a = np.array([3, 2, 5])
         self.log.info("TESTLOG in test_lala")
         import time
         time.sleep(1)
         self.log.debug("TESTLOG after log")
         time.sleep(0.5)
 
-        self.assertEqual(a.size, 4)
+        try:
+            import numpy as np
+        except ImportError:
+            pass
+        else:
+            a = np.array([3, 2, 5])
+            self.assertEqual(a.size, 4)
 
     def test_bam(self):
         a = 5
