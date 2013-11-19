@@ -1,6 +1,7 @@
 import unittest
 import logging
 
+
 class TestBase(unittest.TestCase):
 
     @classmethod

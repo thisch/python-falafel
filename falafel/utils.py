@@ -14,6 +14,7 @@ def iterate_tests(test_suite_or_case):
             for subtest in iterate_tests(test):
                 yield subtest
 
+
 def test_list(suite):
     tdata = []
     for tfunc in iterate_tests(suite):
@@ -34,6 +35,7 @@ def test_list(suite):
                       tfunc.__class__.__module__,
                       extra))
     return tdata
+
 
 def findout_terminal_width(defaultwidth=20):
     if hasattr(sys.stdout, 'isatty') and not sys.stdout.isatty():

@@ -14,7 +14,7 @@ if __name__ == '__main__':
                         choices=['moda', 'modb'], type=str, required=True)
     parser.add_argument("--test", action='append', help="Testcase(s) to run")
     parser.add_argument("-L", "--list", action="store_true",
-                        help="List tests which match the specified " \
+                        help="List tests which match the specified "
                         "suite/testcases(s)")
     parser.add_argument("--pdb", action="store_true",
                         help="drop into pdb/ipdb in case of a failure/error")
@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     width = findout_terminal_width()
 
-    print " info ".center(width,'=')
+    print " info ".center(width, '=')
     print "suite: ", pkg
     print "tests: ", allowed_tests
     print "interactive tests:", args.interactive

@@ -21,13 +21,13 @@ ENDC = '\033[0m'
 class _RedGreenWritelnDecorator(object):
     """Used to decorate file-like objects with a handy 'writeln' method"""
 
-    def __init__(self,stream):
+    def __init__(self, stream):
         self.stream = stream
 
     def __getattr__(self, attr):
         if attr in ('stream', '__getstate__'):
             raise AttributeError(attr)
-        return getattr(self.stream,attr)
+        return getattr(self.stream, attr)
 
     def _writehelper(self, text, color, newline=False):
         newtext = "%s%s%s" % (color, text, ENDC)
@@ -59,7 +59,6 @@ class _RedGreenWritelnDecorator(object):
             text = args[0]
             color = args[1]
             self._writehelper(text, color)
-
 
 
 class RedGreenTextTestResult(unittest.TextTestResult):
@@ -127,8 +126,10 @@ class RedGreenTextTestResult(unittest.TextTestResult):
             self.stream.writeln("%s" % err)
 
     def _exc_info_to_string(self, err, test):
-        code = super(RedGreenTextTestResult, self)._exc_info_to_string(err, test)
+        code = super(RedGreenTextTestResult,
+                     self)._exc_info_to_string(err, test)
         return highlight(code, PythonTracebackLexer(), TerminalFormatter())[:-1]
+
 
 class RedGreenTextTestRunner(unittest.TextTestRunner):
     """A test runner class that displays results in textual form.

@@ -55,11 +55,9 @@ class Formatter(logging.Formatter):
     def __init__(self, pre=mycolors, lenstrip=logcolorsextralen,
                  contline=mycolorscontline):
         self.pre = pre
-        self.lenstrip = lenstrip # due to ansi escape
-                                 # sequences (len() returns
-                                 # differnt length if string
-                                 # contains escape
-                                 # sequences)
+        self.lenstrip = lenstrip  # due to ansi escape sequences (len()
+                                  # returns differnt length if string
+                                  # contains escape sequences)
         self.contline = contline  # custom continuation line
 
     def formatTime(self, record, datefmt=None):

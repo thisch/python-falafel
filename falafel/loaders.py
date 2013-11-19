@@ -10,7 +10,7 @@ class FalafelTestLoader(unittest.TestLoader):
         self.allowed_tests = [] if allowed_tests is None else allowed_tests
 
     def getTestCaseNames(self, testCaseClass):
-        #legacy code
+        # legacy code
         if hasattr(testCaseClass, 'createTests'):
             testCaseClass.createTests()
 
