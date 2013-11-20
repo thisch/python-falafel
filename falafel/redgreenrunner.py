@@ -141,12 +141,13 @@ class RedGreenTextTestRunner(unittest.TextTestRunner):
 
     def __init__(self, stream=sys.stderr, descriptions=True, verbosity=1,
                  failfast=False, buffer=False, resultclass=None,
-                 width=None, pdb=False):
+                 width=None, pdb=False, warnings=None):
         self.stream = _RedGreenWritelnDecorator(stream)
         self.descriptions = descriptions
         self.verbosity = verbosity
         self.failfast = failfast
         self.buffer = buffer
+        self.warnings = warnings
         if resultclass is not None:
             self.resultclass = resultclass
         if width is not None:
