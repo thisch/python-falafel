@@ -52,13 +52,18 @@ class Formatter(logging.Formatter):
     # converter = dt.datetime.utcfromtimestamp
     converter = dt.datetime.fromtimestamp
 
-    def __init__(self, pre=mycolors, lenstrip=logcolorsextralen,
-                 contline=mycolorscontline):
-        self.pre = pre
-        self.lenstrip = lenstrip  # due to ansi escape sequences (len()
-                                  # returns differnt length if string
-                                  # contains escape sequences)
-        self.contline = contline  # custom continuation line
+    def __init__(self, *args, **kwargs):
+        self.pre = kwargs.pop('pre', mycolors)
+
+        # due to ansi escape sequences (len() returns differnt length if
+        # string contains escape sequences)
+        self.lenstrip = kwargs.pop('lenstrip', logcolorsextralen)
+
+        # custom continuation line
+        self.contline = kwargs.pop('contline', mycolorscontline)
+
+        super(Formatter, self).__init__(*args, **kwargs)
+
 
     def formatTime(self, record, datefmt=None):
         ct = self.converter(record.created)
