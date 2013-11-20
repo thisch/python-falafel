@@ -4,7 +4,7 @@ import os
 import sys
 import inspect
 import re
-from cStringIO import StringIO
+from io import BytesIO
 
 from .redgreenrunner import RedGreenTextTestResult
 from .redgreenrunner import RedGreenTextTestRunner
@@ -74,7 +74,7 @@ class ResultHandler(RedGreenTextTestResult):
         module = test.__class__.__module__
         desc = ' %s in %s ' % (tname, module)
         logfile = os.path.join('log', '%s.log' % (tname.replace('.', '_')))
-        test.warningserrors = StringIO()
+        test.warningserrors = BytesIO()
         self.stream.open_file(logfile, test.warningserrors)
         self.stream.writeln(desc.center(self.width, '-'))
         self.stream.flush()
