@@ -1,3 +1,4 @@
+import sys
 import logging
 import datetime as dt
 
@@ -47,6 +48,20 @@ mycolorscontline = {k: "\x1b[%sm| \x1b[00m" % v
                     for k, v in logcolors.items()}
 nocolors = {k: "|%9s | " % (v) for k, v in logbase.items()}
 
+class PercentStyle(object):
+
+    default_format = '%(message)s'
+    asctime_format = '%(asctime)s'
+    asctime_search = '%(asctime)'
+
+    def __init__(self, fmt):
+        self._fmt = fmt or self.default_format
+
+    def usesTime(self):
+        return self._fmt.find(self.asctime_search) >= 0
+
+    def format(self, record):
+        return self._fmt % record.__dict__
 
 class Formatter(logging.Formatter):
     # converter = dt.datetime.utcfromtimestamp
@@ -63,6 +78,7 @@ class Formatter(logging.Formatter):
         self.contline = kwargs.pop('contline', mycolorscontline)
 
         super(Formatter, self).__init__(*args, **kwargs)
+        self.datefmt = '%d %b %Y %H:%M:%S.%f'
 
 
     def formatTime(self, record, datefmt=None):
@@ -71,11 +87,12 @@ class Formatter(logging.Formatter):
         return s
 
     def format(self, record):
-        # self._fmt = "[%(asctime)s] %(name)-15s" + \
         self._fmt = "%(asctime)s " + \
                     self.pre[record.levelno] + \
                     "%(message)s"
-        self.datefmt = '%d %b %Y %H:%M:%S.%f'
+        if sys.version_info[0] > 2:
+            self._style = PercentStyle(self._fmt)
+            self._fmt = self._style._fmt
         logstr = logging.Formatter.format(self, record)
         # see http://www.velocityreviews.com/forums/t737197-re-python-logging-handling-multiline-log-entries.html
         # and see also

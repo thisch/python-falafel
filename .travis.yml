@@ -12,5 +12,7 @@ script:
   - ./testrunner.py -S moda -L
   - ./testrunner.py -S moda
   - ./testrunner.py -S moda --debug
+  - cd ../../tests
+  - ./test_logger.py
 notifications:
   email: false
