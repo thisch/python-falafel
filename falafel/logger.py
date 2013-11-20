@@ -42,10 +42,10 @@ logbase = {
 }
 
 mycolors = {k: "\x1b[%sm|%9s | \x1b[00m" % (logcolors[k], v)
-            for k, v in logbase.iteritems()}
+            for k, v in logbase.items()}
 mycolorscontline = {k: "\x1b[%sm| \x1b[00m" % v
-                    for k, v in logcolors.iteritems()}
-nocolors = {k: "|%9s | " % (v) for k, v in logbase.iteritems()}
+                    for k, v in logcolors.items()}
+nocolors = {k: "|%9s | " % (v) for k, v in logbase.items()}
 
 
 class Formatter(logging.Formatter):
