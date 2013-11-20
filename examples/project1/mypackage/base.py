@@ -2,6 +2,7 @@ import unittest
 import logging
 import types
 
+
 class TestBase(unittest.TestCase):
 
     @classmethod

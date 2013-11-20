@@ -48,6 +48,7 @@ mycolorscontline = {k: "\x1b[%sm| \x1b[00m" % v
                     for k, v in logcolors.items()}
 nocolors = {k: "|%9s | " % (v) for k, v in logbase.items()}
 
+
 class PercentStyle(object):
 
     default_format = '%(message)s'
@@ -62,6 +63,7 @@ class PercentStyle(object):
 
     def format(self, record):
         return self._fmt % record.__dict__
+
 
 class Formatter(logging.Formatter):
     # converter = dt.datetime.utcfromtimestamp
@@ -79,7 +81,6 @@ class Formatter(logging.Formatter):
 
         super(Formatter, self).__init__(*args, **kwargs)
         self.datefmt = '%d %b %Y %H:%M:%S.%f'
-
 
     def formatTime(self, record, datefmt=None):
         ct = self.converter(record.created)
