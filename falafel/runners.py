@@ -4,7 +4,12 @@ import os
 import sys
 import inspect
 import re
-from io import BytesIO
+
+if sys.version_info[0] > 2:
+    from io import StringIO
+else:
+    from StringIO import StringIO
+
 
 from .redgreenrunner import RedGreenTextTestResult
 from .redgreenrunner import RedGreenTextTestRunner
@@ -37,7 +42,7 @@ class ResultStream(object):
         self.logfile = open(fname, "w")
         if self.logger is None:
             return
-        nocolfmt = Formatter(nocolors, lenstrip=None, contline=None)
+        nocolfmt = Formatter(pre=nocolors, lenstrip=None, contline=None)
         if self.onlylogtologfile:
             hdl = logging.StreamHandler(self.logfile)
             fmt = nocolfmt
@@ -74,7 +79,7 @@ class ResultHandler(RedGreenTextTestResult):
         module = test.__class__.__module__
         desc = ' %s in %s ' % (tname, module)
         logfile = os.path.join('log', '%s.log' % (tname.replace('.', '_')))
-        test.warningserrors = BytesIO()
+        test.warningserrors = StringIO()
         self.stream.open_file(logfile, test.warningserrors)
         self.stream.writeln(desc.center(self.width, '-'))
         self.stream.flush()

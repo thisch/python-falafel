@@ -6,7 +6,7 @@ class DummyTest(TestBase):
     def _do_test_abc(self, x):
         self.created_files.append(x)
         self.log.debug("added file %s", x)
-        self.log.error("bla")
+        self.log.error("test error")
         self.assertTrue(x)
 
     @classmethod

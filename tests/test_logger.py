@@ -3,12 +3,17 @@
 import logging
 
 from falafel.logger import Formatter
+from falafel.logger import nocolors
 
-def main():
+def main(colors=True):
     lg = logging.getLogger('test')
     lg.setLevel('DEBUG')
     sh = logging.StreamHandler()
-    sh.setFormatter(Formatter())
+    if colors:
+        fmt = Formatter()
+    else:
+        fmt = Formatter(pre=nocolors, lenstrip=None, contline=None)
+    sh.setFormatter(fmt)
     lg.addHandler(sh)
 
     lg.info('Started')
