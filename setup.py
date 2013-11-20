@@ -1,9 +1,7 @@
 from setuptools import setup, find_packages
 
 with open('falafel/version.py') as f:
-    for line in f:
-        if line.startswith('__version__'):
-            exec(line)
+    exec(f.read())
 
 classifiers = [
     'License :: OSI Approved :: BSD License',
