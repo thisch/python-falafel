@@ -10,3 +10,8 @@ unit/integration tests.
    * `Repository <https://github.com/thisch/python-falafel>`_ (at GitHub)
    * `Issue tracker <https://github.com/thisch/python-falafel/issues>`_ (at GitHub)
    * `Travis CI <https://travis-ci.org/#!/thisch/python-falafel>`_ |build-status|
+
+.. |build-status|
+   image:: https://secure.travis-ci.org/thisch/python-falafel.png?branch=master
+   :target: http://travis-ci.org/thisch/python-falafel
+   :alt: Build Status
