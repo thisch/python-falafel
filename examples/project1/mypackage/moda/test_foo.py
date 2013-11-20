@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import unittest
 import logging
 
@@ -22,7 +24,7 @@ class MyFooTest(TestBase):
 
     def test_lala(self):
         self.log.info("TESTLOG in test_lala")
-        print "MSG using 'print'"
+        print("MSG using 'print'")
         tlogger = logging.getLogger('pyspu')
         tlogger.info("LOGGING MSG FROM DIFFERENT LOGGER")
         import time

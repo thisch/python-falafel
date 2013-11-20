@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from __future__ import print_function
+
 import os
 import logging
 from falafel import findout_terminal_width
@@ -31,11 +33,11 @@ if __name__ == '__main__':
 
     width = findout_terminal_width()
 
-    print " info ".center(width, '=')
-    print "suite: ", pkg
-    print "tests: ", allowed_tests
-    print "interactive tests:", args.interactive
-    print '=' * width
+    print(" info ".center(width, '='))
+    print("suite: ", pkg)
+    print("tests: ", allowed_tests)
+    print("interactive tests:", args.interactive)
+    print('=' * width)
 
     if args.interactive:
         os.environ['INTERACTIVE_TESTS'] = '1'
@@ -50,11 +52,11 @@ if __name__ == '__main__':
             from tabulate import tabulate
         except ImportError:
             for data in tdata:
-                print "  %-30s\t(in %s)%s" % data
+                print("  %-30s\t(in %s)%s" % data)
         else:
-            print '\n', tabulate(
-                tdata, headers=['class.method', 'module', 'skipped'])
-        print "%d tests available" % suite.countTestCases()
+            print('\n', tabulate(
+                tdata, headers=['class.method', 'module', 'skipped']))
+        print("%d tests available" % suite.countTestCases())
         exit()
 
     # logging.basicConfig(level='DEBUG')
