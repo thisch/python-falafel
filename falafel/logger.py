@@ -88,9 +88,7 @@ class Formatter(logging.Formatter):
         return s
 
     def format(self, record):
-        self._fmt = "%(asctime)s " + \
-                    self.pre[record.levelno] + \
-                    "%(message)s"
+        self._fmt = "%(asctime)s " + self.pre[record.levelno] + "%(message)s"
         if sys.version_info[0] > 2:
             self._style = PercentStyle(self._fmt)
             self._fmt = self._style._fmt
@@ -101,7 +99,7 @@ class Formatter(logging.Formatter):
         try:
             header, _ = logstr.split(record.message)
             hlen = len(header) - 2  # -2 strips the last to chars needed to
-                                  # add "| "
+                                    # add "| "
             if self.lenstrip is not None:
                 hlen -= self.lenstrip[record.levelno]
             contline = '| ' if self.contline is None else \

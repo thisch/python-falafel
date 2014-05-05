@@ -57,13 +57,15 @@ class ResultStream(object):
         self.logger.addHandler(hdl)
 
     def close_file(self):
-        if self.logfile:
-            self.logfile.close()
-            self.logfile = None
+        if not self.logfile:
+            return
 
-            if self.logger is not None:
-                self.logger.removeHandler(self.logger.handlers[0])
-                self.logger.removeHandler(self.logger.handlers[0])
+        self.logfile.close()
+        self.logfile = None
+
+        if self.logger is not None:
+            self.logger.removeHandler(self.logger.handlers[0])
+            self.logger.removeHandler(self.logger.handlers[0])
 
 
 class ResultHandler(RedGreenTextTestResult):
@@ -72,8 +74,8 @@ class ResultHandler(RedGreenTextTestResult):
     width = 80
 
     def startTest(self, test):
-        unittest.TestResult.startTest(self, test)  # increments the number of
-                                                   # run tests counter
+        # increments the number of run tests counter
+        unittest.TestResult.startTest(self, test)
 
         tname = '%s.%s' % (test.__class__.__name__, test._testMethodName)
         module = test.__class__.__module__
@@ -91,15 +93,15 @@ class ResultHandler(RedGreenTextTestResult):
                 self.stream.writeln("\t%s" % fn)
         if test.data:
             self.stream.writeln("Created data:")
-            for k, v in sorted(test.data.iteritems()):
-                self.stream.writeln("%s:\t%s" % (k, v))
+            for e in sorted(test.data.items()):
+                self.stream.writeln("%s:\t%s" % e)
 
         warnings = test.warningserrors.getvalue()
         test.warningserrors.close()
         if len(warnings):
             self.stream.writeln("Errors and Warnings logged:", WARNING)
             s = warnings.split('\n')
-            s = ['\t' + line for line in s]
+            s = ('\t' + line for line in s)
             self.stream.writeln('\n'.join(s), WARNING)
 
         self.stream.writeln(self.separator2)
@@ -172,8 +174,7 @@ class FalafelTestRunner(RedGreenTextTestRunner):
         if logger is not None:
             kwargs['stream'].logger = logger
             if kwargs.pop('debug', False):
-                kwargs['stream'].onlylogtologfile = False  # log to logfile
-                                                           # as well to
-                                                           # stdout
+                # log to logfile as well to stdout
+                kwargs['stream'].onlylogtologfile = False
 
         super(FalafelTestRunner, self).__init__(*args, **kwargs)
