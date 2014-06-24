@@ -9,14 +9,14 @@ class FalafelTestLoader(unittest.TestLoader):
         super(FalafelTestLoader, self).__init__()
         self.allowed_tests = [] if allowed_tests is None else allowed_tests
 
-    def getTestCaseNames(self, testCaseClass):
+    def test_case_names(self, test_case_cls):
         # legacy code
-        if hasattr(testCaseClass, 'create_tests'):
-            testCaseClass.create_tests()
+        if hasattr(test_case_cls, 'create_tests'):
+            test_case_cls.create_tests()
 
-        if hasattr(testCaseClass, 'create_tests'):
-            testCaseClass.create_tests()
-        return super(FalafelTestLoader, self).getTestCaseNames(testCaseClass)
+        if hasattr(test_case_cls, 'create_tests'):
+            test_case_cls.create_tests()
+        return super(FalafelTestLoader, self).test_case_names(test_case_cls)
 
     def discover(self, *args, **kwargs):
         suite = super(FalafelTestLoader, self).discover(*args, **kwargs)
