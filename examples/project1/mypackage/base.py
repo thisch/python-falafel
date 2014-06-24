@@ -6,7 +6,7 @@ import types
 class TestBase(unittest.TestCase):
 
     @classmethod
-    def _createTests(cls, globals, **funcs):
+    def _create_tests(cls, globals, **funcs):
         for name, func in funcs.items():
             newfunc = types.FunctionType(
                 name=name, code=func.__code__,

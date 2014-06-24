@@ -11,8 +11,8 @@ class FalafelTestLoader(unittest.TestLoader):
 
     def getTestCaseNames(self, testCaseClass):
         # legacy code
-        if hasattr(testCaseClass, 'createTests'):
-            testCaseClass.createTests()
+        if hasattr(testCaseClass, 'create_tests'):
+            testCaseClass.create_tests()
 
         if hasattr(testCaseClass, 'create_tests'):
             testCaseClass.create_tests()

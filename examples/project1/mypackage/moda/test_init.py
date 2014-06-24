@@ -10,8 +10,8 @@ class DummyTest(TestBase):
         self.assertTrue(x)
 
     @classmethod
-    def createTests(cls):
+    def create_tests(cls):
         funcs = {}
         funcs['test_mysuper'] = lambda s, v="test.rst": s._do_test_abc(v)
         funcs['test_myfoo'] = lambda s, v="foobar.csv": s._do_test_abc(v)
-        cls._createTests(globals(), **funcs)
+        cls._create_tests(globals(), **funcs)
