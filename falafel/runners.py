@@ -87,11 +87,11 @@ class ResultHandler(RedGreenTextTestResult):
         self.stream.flush()
 
     def stopTest(self, test):
-        if test.created_files:
+        if getattr(test, 'created_files', False):
             self.stream.writeln("Created files:")
             for fn in sorted(test.created_files):
                 self.stream.writeln("\t%s" % fn)
-        if test.data:
+        if getattr(test, 'data', False):
             self.stream.writeln("Created data:")
             for e in sorted(test.data.items()):
                 self.stream.writeln("%s:\t%s" % e)
