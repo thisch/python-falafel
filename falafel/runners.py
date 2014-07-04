@@ -192,7 +192,7 @@ class FalafelTestRunner(RedGreenTextTestRunner):
             Write debug log messages to stdout. Note that debug messages are
             per default written to the logfiles given that `logdirectory` was
             specified. Only has an effect if a python logger was set.
-        logger : python logger instance, optional
+        logger : python logger instance, str, optional
         """
         # TODO add more kwargs to control the behavior of the ResultHandler
         # class and of the ResultStream class
