@@ -64,8 +64,8 @@ class ResultStream(object):
         self.logfile = None
 
         if self.logger is not None:
-            self.logger.removeHandler(self.logger.handlers[0])
-            self.logger.removeHandler(self.logger.handlers[0])
+            self.logger.removeHandler(self.logger.handlers[-1])
+            self.logger.removeHandler(self.logger.handlers[-1])
 
 
 class ResultHandler(RedGreenTextTestResult):

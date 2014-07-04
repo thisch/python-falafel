@@ -75,8 +75,8 @@ if args.debug or args.list:
     if args.list:
         exit()
 
-# logging.basicConfig(level='DEBUG')
 logger = logging.getLogger('st')
+logger.addHandler(logging.NullHandler())
 logger.setLevel(logging.DEBUG)
 logger.propagate = False
 
