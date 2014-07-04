@@ -27,6 +27,8 @@ class ResultStream(object):
         self.logger = None  # is set in the TestRunner class
         self.debug = False
         self.ansi_escape = re.compile(r'\x1b[^m]*m')
+        self.nocolfmt = Formatter(pre=nocolors, lenstrip=None, contline=None)
+        self.colfmt = Formatter()
 
     def flush(self):
         self.orig_stream.flush()
@@ -42,18 +44,17 @@ class ResultStream(object):
         self.logfile = open(fname, "w")
         if self.logger is None:
             return
-        nocolfmt = Formatter(pre=nocolors, lenstrip=None, contline=None)
         if self.debug:
             hdl = logging.StreamHandler(self)
-            fmt = Formatter()
+            fmt = self.colfmt
         else:
             hdl = logging.StreamHandler(self.logfile)
-            fmt = nocolfmt
+            fmt = self.nocolfmt
         hdl.setFormatter(fmt)
         self.logger.addHandler(hdl)
         hdl = logging.StreamHandler(warnstream)
         hdl.setLevel(logging.WARNING)
-        hdl.setFormatter(nocolfmt)
+        hdl.setFormatter(self.nocolfmt)
         self.logger.addHandler(hdl)
 
     def close_file(self):
