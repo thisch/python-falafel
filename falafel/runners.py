@@ -25,7 +25,7 @@ class ResultStream(object):
         self.orig_stream = orig_stream
         self.logfile = None
         self.logger = None  # is set in the TestRunner class
-        self.onlylogtologfile = True
+        self.debug = False
         self.ansi_escape = re.compile(r'\x1b[^m]*m')
 
     def flush(self):
@@ -43,12 +43,12 @@ class ResultStream(object):
         if self.logger is None:
             return
         nocolfmt = Formatter(pre=nocolors, lenstrip=None, contline=None)
-        if self.onlylogtologfile:
-            hdl = logging.StreamHandler(self.logfile)
-            fmt = nocolfmt
-        else:
+        if self.debug:
             hdl = logging.StreamHandler(self)
             fmt = Formatter()
+        else:
+            hdl = logging.StreamHandler(self.logfile)
+            fmt = nocolfmt
         hdl.setFormatter(fmt)
         self.logger.addHandler(hdl)
         hdl = logging.StreamHandler(warnstream)
@@ -72,6 +72,7 @@ class ResultHandler(RedGreenTextTestResult):
 
     ipdb = False
     width = 80
+    logdirectory = None
 
     def startTest(self, test):
         # increments the number of run tests counter
@@ -80,9 +81,12 @@ class ResultHandler(RedGreenTextTestResult):
         tname = '%s.%s' % (test.__class__.__name__, test._testMethodName)
         module = test.__class__.__module__
         desc = ' %s in %s ' % (tname, module)
-        logfile = os.path.join('log', '%s.log' % (tname.replace('.', '_')))
+
         test.warningserrors = StringIO()
-        self.stream.open_file(logfile, test.warningserrors)
+        if self.logdirectory:
+            logfile = os.path.join(self.logdirectory,
+                                   '%s.log' % (tname.replace('.', '_')))
+            self.stream.open_file(logfile, test.warningserrors)
         self.stream.writeln(desc.center(self.width, '-'))
         self.stream.flush()
 
@@ -105,7 +109,8 @@ class ResultHandler(RedGreenTextTestResult):
             self.stream.writeln('\n'.join(s), WARNING)
 
         self.stream.writeln(self.separator2)
-        self.stream.close_file()
+        if self.logdirectory:
+            self.stream.close_file()
         self.stream.writeln('')
 
     def addError(self, test, err):
@@ -167,14 +172,33 @@ class ResultHandler(RedGreenTextTestResult):
 class FalafelTestRunner(RedGreenTextTestRunner):
 
     def __init__(self, *args, **kwargs):
-        kwargs["stream"] = ResultStream(sys.stderr)
+        """
+        Parameters
+        ----------
+        logdirectory : str, optional
+            If set, specifies the directory where all logfiles are stored.
+            Otherwise, test output is only written to stdout.
+        debug : bool
+            Write debug log messages to stdout. Note that debug messages are
+            per default written to the logfiles given that `logdirectory` was
+            specified. Only has an effect if a python logger was set.
+        logger : python logger instance, optional
+        """
+        # TODO add more kwargs to control the behavior of the ResultHandler
+        # class and of the ResultStream class
+
+        if 'stream' not in kwargs:
+            kwargs["stream"] = ResultStream(sys.stderr)
         kwargs["resultclass"] = ResultHandler
+        ResultHandler.logdirectory = kwargs.pop('logdirectory')
+        if ResultHandler.logdirectory and not os.path.exists(
+                ResultHandler.logdirectory):
+            print("creating logdirectory: '%s'" % ResultHandler.logdirectory)
+            os.makedirs(ResultHandler.logdirectory)
 
         logger = kwargs.pop('logger', None)
-        if logger is not None:
+        if logger is not None and isinstance(kwargs['stream'], ResultStream):
             kwargs['stream'].logger = logger
-            if kwargs.pop('debug', False):
-                # log to logfile as well to stdout
-                kwargs['stream'].onlylogtologfile = False
+            kwargs['stream'].debug = kwargs.pop('debug', False)
 
         super(FalafelTestRunner, self).__init__(*args, **kwargs)
