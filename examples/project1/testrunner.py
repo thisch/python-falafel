@@ -75,13 +75,8 @@ if args.debug or args.list:
     if args.list:
         exit()
 
-logger = logging.getLogger('st')
-logger.addHandler(logging.NullHandler())
-logger.setLevel(logging.DEBUG)
-logger.propagate = False
-
 logdir = args.logdirectory if args.log else None
 runner = FalafelTestRunner(
-    verbosity=2, logger=logger, debug=args.debug,
+    verbosity=2, logger='st', debug=args.debug,
     logdirectory=logdir, width=width, pdb=args.pdb)
 runner.run(suite)

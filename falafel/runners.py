@@ -40,32 +40,41 @@ class ResultStream(object):
         if self.logfile:
             self.logfile.write(self.ansi_escape.sub('', text))
 
-    def open_file(self, fname, warnstream):
-        self.logfile = open(fname, "w")
+    def before_test(self, logfilename, warnstream):
+        if logfilename:
+            self.logfile = open(logfilename, "w")
         if self.logger is None:
             return
+
         if self.debug:
+            # write to orig_stream and to logfile (if specified)
             hdl = logging.StreamHandler(self)
-            fmt = self.colfmt
-        else:
+            hdl.setFormatter(self.colfmt)
+        elif self.logfile:
+            # only write log messages to logfile, headers/footers are
+            # written to orig_stream as well
             hdl = logging.StreamHandler(self.logfile)
-            fmt = self.nocolfmt
-        hdl.setFormatter(fmt)
+            hdl.setFormatter(self.nocolfmt)
+        else:
+            # only write the warnings/errors summary to
+            # orig_stream. headers/footers of the tests are written to
+            # orig_stream as well
+            hdl = logging.NullHandler()
         self.logger.addHandler(hdl)
         hdl = logging.StreamHandler(warnstream)
         hdl.setLevel(logging.WARNING)
         hdl.setFormatter(self.nocolfmt)
         self.logger.addHandler(hdl)
 
-    def close_file(self):
-        if not self.logfile:
-            return
-
-        self.logfile.close()
-        self.logfile = None
+    def after_test(self):
+        if self.logfile:
+            self.logfile.close()
+            self.logfile = None
 
         if self.logger is not None:
+            # handler for warnstream
             self.logger.removeHandler(self.logger.handlers[-1])
+            # stream or nullhandler
             self.logger.removeHandler(self.logger.handlers[-1])
 
 
@@ -84,10 +93,11 @@ class ResultHandler(RedGreenTextTestResult):
         desc = ' %s in %s ' % (tname, module)
 
         test.warningserrors = StringIO()
+        logfile = None
         if self.logdirectory:
             logfile = os.path.join(self.logdirectory,
                                    '%s.log' % (tname.replace('.', '_')))
-            self.stream.open_file(logfile, test.warningserrors)
+        self.stream.before_test(logfile, test.warningserrors)
         self.stream.writeln(desc.center(self.width, '-'))
         self.stream.flush()
 
@@ -110,8 +120,7 @@ class ResultHandler(RedGreenTextTestResult):
             self.stream.writeln('\n'.join(s), WARNING)
 
         self.stream.writeln(self.separator2)
-        if self.logdirectory:
-            self.stream.close_file()
+        self.stream.after_test()
         self.stream.writeln('')
 
     def addError(self, test, err):
@@ -199,6 +208,10 @@ class FalafelTestRunner(RedGreenTextTestRunner):
 
         logger = kwargs.pop('logger', None)
         if logger is not None and isinstance(kwargs['stream'], ResultStream):
+            if isinstance(logger, (str, unicode)):
+                logger = logging.getLogger(logger)
+                logger.setLevel(logging.DEBUG)
+                logger.propagate = False
             kwargs['stream'].logger = logger
             kwargs['stream'].debug = kwargs.pop('debug', False)
 
