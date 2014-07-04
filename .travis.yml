@@ -14,8 +14,8 @@ script:
   - ./testrunner.py -S moda -L
   - ./testrunner.py -S moda
   - ./testrunner.py -S moda --debug
-  - ./testrunner.py -S moda --debug --log
-  - ./testrunner.py -S moda --log
+  - ./testrunner.py -S moda --debug --log && cat log/* && rm -rf log
+  - ./testrunner.py -S moda --log && cat log/* && rm -rf log
   - ./testrunner.py -S modb --debug
   - cd ../../tests
   - ./test_logger.py
