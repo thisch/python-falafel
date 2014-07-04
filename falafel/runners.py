@@ -208,7 +208,7 @@ class FalafelTestRunner(RedGreenTextTestRunner):
 
         logger = kwargs.pop('logger', None)
         if logger is not None and isinstance(kwargs['stream'], ResultStream):
-            if isinstance(logger, (str, unicode)):
+            if isinstance(logger, str):
                 logger = logging.getLogger(logger)
                 logger.setLevel(logging.DEBUG)
                 logger.propagate = False
