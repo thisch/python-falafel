@@ -15,7 +15,8 @@ parser = argparse.ArgumentParser(description='custom test runner for '
                                  'project1')
 parser.add_argument("-S", "--suite", help="Test suite",
                     choices=['moda', 'modb'], type=str, required=True)
-parser.add_argument("--test", action='append', help="Testcase(s) to run")
+parser.add_argument("--test", action='append', help="Testcase(s)/Test(s) "
+                    "to run")
 parser.add_argument("-L", "--list", action="store_true",
                     help="List tests which match the specified "
                     "suite/testcases(s)")
@@ -43,9 +44,9 @@ allowed_tests = args.test
 width = findout_terminal_width()
 
 print(" info ".center(width, '='))
-print("suite: ", pkg)
-print("tests: ", allowed_tests)
-print("interactive tests:", args.interactive)
+print("suite: %s" % pkg)
+print("tests: %s" % allowed_tests)
+print("interactive tests: %s" % args.interactive)
 print('=' * width)
 
 if args.interactive:
@@ -55,18 +56,24 @@ loader = FalafelTestLoader(allowed_tests=allowed_tests)
 suite = loader.discover('mypackage.' + pkg)
 
 tdata = []
-if args.list:
-    tdata = test_list(suite)
+if args.debug or args.list:
+    with_skipped = args.list
+    tdata = test_list(suite, with_skipped=with_skipped)
+    if not with_skipped:
+        print("The following tests will be run:", end='')
     try:
         from tabulate import tabulate
     except ImportError:
         for data in tdata:
             print("  %-30s\t(in %s)%s" % data)
     else:
-        print('\n', tabulate(
-            tdata, headers=['class.method', 'module', 'skipped']))
-    print("%d tests available" % suite.countTestCases())
-    exit()
+        headers = ['class.method', 'module']
+        if not with_skipped:
+            headers.append('skipped')
+        print('\n%s' % tabulate(tdata, headers=headers))
+    print("%d tests available" % len(tdata))
+    if args.list:
+        exit()
 
 # logging.basicConfig(level='DEBUG')
 logger = logging.getLogger('st')

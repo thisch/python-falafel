@@ -15,7 +15,7 @@ def iterate_tests(test_suite_or_case):
                 yield subtest
 
 
-def test_list(suite):
+def test_list(suite, with_skipped=True):
     tdata = []
     for tfunc in iterate_tests(suite):
         tname = '%s.%s' % (tfunc.__class__.__name__,
@@ -34,6 +34,9 @@ def test_list(suite):
         tdata.append((tname,
                       tfunc.__class__.__module__,
                       extra))
+
+    if not with_skipped:
+        tdata = [t[:2] for t in tdata if t[2] == 'no']
     return tdata
 
 
