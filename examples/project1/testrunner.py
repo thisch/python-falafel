@@ -68,7 +68,7 @@ if args.debug or args.list:
             print("  %-30s\t(in %s)%s" % data)
     else:
         headers = ['class.method', 'module']
-        if not with_skipped:
+        if with_skipped:
             headers.append('skipped')
         print('\n%s' % tabulate(tdata, headers=headers))
     print("%d tests available" % len(tdata))
