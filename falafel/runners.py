@@ -51,14 +51,15 @@ class ResultStream(object):
             hdl = logging.StreamHandler(self)
             hdl.setFormatter(self.colfmt)
         elif self.logfile:
-            # only write log messages to logfile, headers/footers are
-            # written to orig_stream as well
+            # log messages are only written to the logfiles and to
+            # orig-stream. The ansi escape sequences in the redgreentest
+            # output get removed from the logfile (`self.ansi_escape`)
             hdl = logging.StreamHandler(self.logfile)
             hdl.setFormatter(self.nocolfmt)
         else:
-            # only write the warnings/errors summary to
-            # orig_stream. headers/footers of the tests are written to
-            # orig_stream as well
+            # no logfile output + no logger output to orig_stream. exception:
+            # the warnings/errors summary at the end of each test is written
+            # to orig_stream
             hdl = logging.NullHandler()
         self.logger.addHandler(hdl)
         hdl = logging.StreamHandler(warnstream)
@@ -71,11 +72,13 @@ class ResultStream(object):
             self.logfile.close()
             self.logfile = None
 
-        if self.logger is not None:
-            # handler for warnstream
-            self.logger.removeHandler(self.logger.handlers[-1])
-            # stream or nullhandler
-            self.logger.removeHandler(self.logger.handlers[-1])
+        if self.logger is None:
+            return
+
+        # handler for warnstream
+        self.logger.removeHandler(self.logger.handlers[-1])
+        # stream or nullhandler
+        self.logger.removeHandler(self.logger.handlers[-1])
 
 
 class ResultHandler(RedGreenTextTestResult):
