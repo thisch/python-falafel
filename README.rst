@@ -15,3 +15,17 @@ unit/integration tests.
    image:: https://secure.travis-ci.org/thisch/python-falafel.png?branch=master
    :target: http://travis-ci.org/thisch/python-falafel
    :alt: Build Status
+
+Features:
+
+* colorized testrunner output (using `redgreenunittests`)
+* python loggers can be used in test classes
+* colorized log message output
+* output of each test can we redirected to logfiles
+* tests can generate files and arbitrary data which is written to the logdirectory
+
+TODO:
+
+* xunit support
+* different verbosity levels in testrunner output
+* falafel script which parses a `.falafel.cfg` config file
