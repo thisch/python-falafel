@@ -1,3 +1,4 @@
+from os.path import join
 import unittest
 import logging
 import types
@@ -19,3 +20,15 @@ class TestBase(unittest.TestCase):
         self.data = {}
         self.log = logging.getLogger("st")
         self.log.debug("testbase.__init__")
+
+    def gen_filename(self, postfix, extension):
+        if not hasattr(self, '_logdir'):
+            # _logdir gets set by the falafel testrunner. More precisely by
+            # the ResultHandler class
+            return None
+        fname = "%s_%s%s.%s" % (self.__class__.__name__,
+                                self._testMethodName,
+                                "_%s" % postfix if postfix else "",
+                                extension)
+        fname = join(self._logdir, fname)
+        return fname

@@ -96,8 +96,10 @@ class ResultHandler(RedGreenTextTestResult):
         desc = ' %s in %s ' % (tname, module)
 
         test.warningserrors = StringIO()
+        
         logfile = None
         if self.logdirectory:
+            test._logdir = self.logdirectory
             logfile = os.path.join(self.logdirectory,
                                    '%s.log' % (tname.replace('.', '_')))
         self.stream.before_test(logfile, test.warningserrors)
