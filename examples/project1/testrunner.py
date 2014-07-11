@@ -3,7 +3,6 @@ from __future__ import print_function
 
 import argparse
 import os
-import logging
 
 from falafel import findout_terminal_width
 from falafel import test_list
@@ -65,7 +64,7 @@ if args.debug or args.list:
         from tabulate import tabulate
     except ImportError:
         for data in tdata:
-            print("  %-30s\t(in %s)%s" % data)
+            print("  %-30s\tin %-30s\tskipped: %s" % data)
     else:
         headers = ['class.method', 'module']
         if with_skipped:
