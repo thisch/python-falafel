@@ -79,6 +79,9 @@ class Formatter(logging.Formatter):
         # custom continuation line
         self.contline = kwargs.pop('contline', mycolorscontline)
 
+        # do not output timestamps in log messages
+        self.no_time = kwargs.pop('no_time', False)
+
         super(Formatter, self).__init__(*args, **kwargs)
         self.datefmt = '%d %b %Y %H:%M:%S.%f'
 
@@ -88,7 +91,14 @@ class Formatter(logging.Formatter):
         return s
 
     def format(self, record):
-        self._fmt = "%(asctime)s " + self.pre[record.levelno] + "%(message)s"
+        if self.no_time:
+            self._fmt = "%(name)-6s" + \
+                        self.pre[record.levelno] + \
+                        "%(message)s"
+        else:
+            self._fmt = "[%(asctime)s] %(name)-6s" + \
+                        self.pre[record.levelno] + \
+                        "%(message)s"
         if sys.version_info[0] > 2:
             self._style = PercentStyle(self._fmt)
             self._fmt = self._style._fmt
