@@ -2,6 +2,16 @@ import sys
 import logging
 import datetime as dt
 
+rank = ''
+try:
+    from mpi4py import MPI
+    comm = MPI.COMM_WORLD
+    if comm.size > 1:
+        rank = '-%02d- ' % comm.rank
+except ImportError:
+    pass
+
+
 CRITICAL = logging.CRITICAL
 FATAL = logging.FATAL
 ERROR = logging.ERROR
@@ -31,7 +41,6 @@ logcolorsextralen = {
     NOTSET:    9
 }
 
-
 logbase = {
     CRITICAL: 'CRITICAL',  # critical/fatal
     ERROR:    'ERROR',
@@ -42,7 +51,11 @@ logbase = {
     NOTSET:   'BLANK'
 }
 
-mycolors = {k: "\x1b[%sm|%9s | \x1b[00m" % (logcolors[k], v)
+def colorize(text, color):
+    return "\x1b[%sm%s\x1b[00m" % (color, text)
+
+
+mycolors = {k: colorize('|%9s | ' % v, logcolors[k])
             for k, v in logbase.items()}
 mycolorscontline = {k: "\x1b[%sm| \x1b[00m" % v
                     for k, v in logcolors.items()}
@@ -79,8 +92,8 @@ class Formatter(logging.Formatter):
         # custom continuation line
         self.contline = kwargs.pop('contline', mycolorscontline)
 
-        # do not output timestamps in log messages
-        self.no_time = kwargs.pop('no_time', False)
+        # output timestamps in log messages
+        self.output_time = not kwargs.pop('no_time', False)
 
         super(Formatter, self).__init__(*args, **kwargs)
         self.datefmt = '%d %b %Y %H:%M:%S.%f'
@@ -91,14 +104,20 @@ class Formatter(logging.Formatter):
         return s
 
     def format(self, record):
-        if self.no_time:
-            self._fmt = "%(name)-6s" + \
-                        self.pre[record.levelno] + \
-                        "%(message)s"
-        else:
-            self._fmt = "[%(asctime)s] %(name)-6s" + \
-                        self.pre[record.levelno] + \
-                        "%(message)s"
+        prefix = ''
+        prefix_collen = 0
+        if rank:
+            # TODO use differnt colors for different ranks ??
+            # TODO make colorized output optional
+            prefix = colorize(rank, logcolors[record.levelno])
+            prefix_collen = 10
+
+        if not self.output_time:
+            prefix += '[%(asctime)s] '
+
+        self._fmt = prefix + "%(name)-6s" + \
+                    self.pre[record.levelno] + \
+                    "%(message)s"
         if sys.version_info[0] > 2:
             self._style = PercentStyle(self._fmt)
             self._fmt = self._style._fmt
@@ -112,6 +131,7 @@ class Formatter(logging.Formatter):
                                     # add "| "
             if self.lenstrip is not None:
                 hlen -= self.lenstrip[record.levelno]
+            hlen -= prefix_collen
             contline = '| ' if self.contline is None else \
                        self.contline[record.levelno]
             logstr = logstr.replace('\n', '\n' + ' ' * hlen + contline)
