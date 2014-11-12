@@ -93,10 +93,16 @@ class Formatter(logging.Formatter):
         self.contline = kwargs.pop('contline', mycolorscontline)
 
         # output timestamps in log messages
-        self.output_time = not kwargs.pop('no_time', False)
+        self.no_datetime = kwargs.pop('no_datetime', False)
+
+        self.no_date = kwargs.pop('no_date', False)
 
         super(Formatter, self).__init__(*args, **kwargs)
-        self.datefmt = '%d %b %Y %H:%M:%S.%f'
+
+        if self.no_date:
+            self.datefmt = '%H:%M:%S.%f'
+        else:
+            self.datefmt = '%d %b %Y %H:%M:%S.%f'
 
     def formatTime(self, record, datefmt=None):
         ct = self.converter(record.created)
@@ -112,12 +118,12 @@ class Formatter(logging.Formatter):
             prefix = colorize(rank, logcolors[record.levelno])
             prefix_collen = 10
 
-        if not self.output_time:
+        if not self.no_datetime:
             prefix += '[%(asctime)s] '
 
-        self._fmt = prefix + "%(name)-6s" + \
-                    self.pre[record.levelno] + \
-                    "%(message)s"
+        self._fmt = (prefix + "%(name)-6s" +
+                     self.pre[record.levelno] +
+                     "%(message)s")
         if sys.version_info[0] > 2:
             self._style = PercentStyle(self._fmt)
             self._fmt = self._style._fmt
