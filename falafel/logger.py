@@ -112,17 +112,20 @@ class Formatter(logging.Formatter):
     def format(self, record):
         prefix = ''
         prefix_collen = 0
+        lvlno = record.levelno
         if rank:
+            prefix = rank
             # TODO use differnt colors for different ranks ??
             # TODO make colorized output optional
-            prefix = colorize(rank, logcolors[record.levelno])
-            prefix_collen = 10
+            if lvlno in logcolors:
+                prefix = colorize(rank, logcolors[lvlno])
+                prefix_collen = 10
 
         if not self.no_datetime:
             prefix += '[%(asctime)s] '
 
         self._fmt = (prefix + "%(name)-6s" +
-                     self.pre[record.levelno] +
+                     self.pre.get(lvlno, ' unknown lvl') +
                      "%(message)s")
         if sys.version_info[0] > 2:
             self._style = PercentStyle(self._fmt)
@@ -135,11 +138,12 @@ class Formatter(logging.Formatter):
             header, _ = logstr.split(record.message)
             hlen = len(header) - 2  # -2 strips the last to chars needed to
                                     # add "| "
-            if self.lenstrip is not None:
-                hlen -= self.lenstrip[record.levelno]
+            if self.lenstrip is not None and lvlno in self.lenstrip:
+                hlen -= self.lenstrip.get(lvlno, 0)
             hlen -= prefix_collen
-            contline = '| ' if self.contline is None else \
-                       self.contline[record.levelno]
+            contline = '| ' if self.contline is None or \
+                       lvlno not in self.contline else \
+                       self.contline[lvlno]
             logstr = logstr.replace('\n', '\n' + ' ' * hlen + contline)
         except:
             pass
