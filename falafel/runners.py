@@ -16,7 +16,7 @@ from .redgreenrunner import RedGreenTextTestRunner
 from .redgreenrunner import WARNING
 from .redgreenrunner import FAIL
 from .logger import Formatter
-from .logger import nocolors
+from .logger import NOCOLORS
 
 
 class ResultStream(object):
@@ -27,7 +27,7 @@ class ResultStream(object):
         self.logger = None  # is set in the TestRunner class
         self.debug = False
         self.ansi_escape = re.compile(r'\x1b[^m]*m')
-        self.nocolfmt = Formatter(pre=nocolors, lenstrip=None, contline=None)
+        self.nocolfmt = Formatter(pre=NOCOLORS, lenstrip=None, contline=None)
         self.colfmt = Formatter()
 
     def flush(self):
@@ -96,7 +96,7 @@ class ResultHandler(RedGreenTextTestResult):
         desc = ' %s in %s ' % (tname, module)
 
         test.warningserrors = StringIO()
-        
+
         logfile = None
         if self.logdirectory:
             test._logdir = self.logdirectory

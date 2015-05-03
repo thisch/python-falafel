@@ -1,3 +1,6 @@
+"""Falafel Formatting for Logging
+"""
+
 import sys
 import logging
 import datetime as dt
@@ -21,7 +24,7 @@ INFO = logging.INFO
 DEBUG = logging.DEBUG
 NOTSET = logging.NOTSET
 
-logcolors = {
+LOGCOLORS = {
     CRITICAL: '31',  # critical/fatal
     ERROR:    '31;01',
     WARNING:  '33',
@@ -31,7 +34,7 @@ logcolors = {
     NOTSET:    '0'
 }
 
-logcolorsextralen = {
+LOGCOLORSEXTRALEN = {
     CRITICAL: 10,  # critical/fatal
     ERROR:    13,
     WARNING:  10,
@@ -41,7 +44,7 @@ logcolorsextralen = {
     NOTSET:    9
 }
 
-logbase = {
+LOGBASE = {
     CRITICAL: 'CRITICAL',  # critical/fatal
     ERROR:    'ERROR',
     WARNING:  'WARNING',
@@ -55,11 +58,11 @@ def colorize(text, color):
     return "\x1b[%sm%s\x1b[00m" % (color, text)
 
 
-mycolors = {k: colorize('|%9s | ' % v, logcolors[k])
-            for k, v in logbase.items()}
-mycolorscontline = {k: "\x1b[%sm| \x1b[00m" % v
-                    for k, v in logcolors.items()}
-nocolors = {k: "|%9s | " % (v) for k, v in logbase.items()}
+COLORS = {k: colorize('|%9s | ' % v, LOGCOLORS[k])
+            for k, v in LOGBASE.items()}
+COLORSCONTLINE = {k: "\x1b[%sm| \x1b[00m" % v
+                    for k, v in LOGCOLORS.items()}
+NOCOLORS = {k: "|%9s | " % (v) for k, v in LOGBASE.items()}
 
 
 class PercentStyle(object):
@@ -79,18 +82,36 @@ class PercentStyle(object):
 
 
 class Formatter(logging.Formatter):
+    """
+    Examples
+    ========
+    >>> import sys
+    >>> import logging
+    >>> from falafel.logger import Formatter as FalafelFormatter
+    >>> from falafel.logger import NOCOLORS as FALAFELNOCOLORS
+    >>> sh = logging.StreamHandler(sys.stdout)
+    >>> sh.setFormatter(FalafelFormatter(no_datetime=True,
+    ...                                  pre=FALAFELNOCOLORS,
+    ...                                  contline=FALAFELNOCOLORS))
+    >>> LOGGER = logging.getLogger()
+    >>> LOGGER.setLevel(logging.DEBUG)
+    >>> LOGGER.addHandler(sh)
+    >>> LOGGER.debug("debug ...")
+    root  |    DEBUG | debug ...
+    """
+
     # converter = dt.datetime.utcfromtimestamp
     converter = dt.datetime.fromtimestamp
 
     def __init__(self, *args, **kwargs):
-        self.pre = kwargs.pop('pre', mycolors)
+        self.pre = kwargs.pop('pre', COLORS)
 
         # due to ansi escape sequences (len() returns differnt length if
         # string contains escape sequences)
-        self.lenstrip = kwargs.pop('lenstrip', logcolorsextralen)
+        self.lenstrip = kwargs.pop('lenstrip', LOGCOLORSEXTRALEN)
 
         # custom continuation line
-        self.contline = kwargs.pop('contline', mycolorscontline)
+        self.contline = kwargs.pop('contline', COLORSCONTLINE)
 
         # output timestamps in log messages
         self.no_datetime = kwargs.pop('no_datetime', False)
@@ -117,8 +138,8 @@ class Formatter(logging.Formatter):
             prefix = rank
             # TODO use differnt colors for different ranks ??
             # TODO make colorized output optional
-            if lvlno in logcolors:
-                prefix = colorize(rank, logcolors[lvlno])
+            if lvlno in LOGCOLORS:
+                prefix = colorize(rank, LOGCOLORS[lvlno])
                 prefix_collen = 10
 
         if not self.no_datetime:
