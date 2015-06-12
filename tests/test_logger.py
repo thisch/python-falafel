@@ -3,7 +3,7 @@
 import logging
 
 from falafel.logger import Formatter
-from falafel.logger import nocolors
+from falafel.logger import NOCOLORS
 
 
 def main(colors=True):
@@ -13,7 +13,7 @@ def main(colors=True):
     if colors:
         fmt = Formatter()
     else:
-        fmt = Formatter(pre=nocolors, lenstrip=None, contline=None)
+        fmt = Formatter(pre=NOCOLORS, lenstrip=None, contline=None)
     sh.setFormatter(fmt)
     lg.addHandler(sh)
 
