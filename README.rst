@@ -25,6 +25,6 @@ Features:
 
 TODO:
 
-* xunit support
+* xunit support (WIP) 
 * different verbosity levels in testrunner output
 * falafel script which parses a `.falafel.cfg` config file
