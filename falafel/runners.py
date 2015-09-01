@@ -2,7 +2,6 @@ import logging
 import unittest
 import os
 import sys
-import inspect
 import re
 
 if sys.version_info[0] > 2:
@@ -163,10 +162,7 @@ class ResultHandler(RedGreenTextTestResult):
                 p = IPython.Debugger.Pdb(ip.options.colors)
 
             p.reset()
-            # inspect.trace() returns a list of frame information from this
-            # frame to the one that raised the exception being treated
-            frame, filename, line, func_name, ctx, idx = inspect.trace()[-1]
-            p.interaction(frame, tb)
+            p.interaction(tb.tb_frame, tb)
         finally:
             sys.stdout = stdout
 
