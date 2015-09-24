@@ -148,6 +148,8 @@ class RedGreenTextTestRunner(unittest.TextTestRunner):
         self.failfast = failfast
         self.buffer = buffer
         self.warnings = warnings
+        if sys.version_info[:2] > (3, 4):
+            self.tb_locals = True
         if resultclass is not None:
             self.resultclass = resultclass
         if width is not None:
