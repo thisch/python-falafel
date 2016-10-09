@@ -201,11 +201,11 @@ class FalafelTestRunner(RedGreenTextTestRunner):
         if 'stream' not in kwargs:
             kwargs["stream"] = ResultStream(sys.stderr)
         kwargs["resultclass"] = ResultHandler
-        ResultHandler.logdirectory = kwargs.pop('logdirectory')
-        if ResultHandler.logdirectory and not os.path.exists(
-                ResultHandler.logdirectory):
-            print("creating logdirectory: '%s'" % ResultHandler.logdirectory)
-            os.makedirs(ResultHandler.logdirectory)
+        ResultHandler.logdirectory = kwargs.pop('logdirectory', None)
+        if ResultHandler.logdirectory is not None:
+            if not os.path.exists(ResultHandler.logdirectory):
+                print("creating logdirectory: '%s'" % ResultHandler.logdirectory)
+                os.makedirs(ResultHandler.logdirectory)
 
         logger = kwargs.pop('logger', None)
         if logger is not None and isinstance(kwargs['stream'], ResultStream):
