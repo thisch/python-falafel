@@ -213,7 +213,7 @@ class FalafelTestRunner(RedGreenTextTestRunner):
                 logger = logging.getLogger(logger)
                 logger.setLevel(logging.DEBUG)
                 logger.propagate = False
-            kwargs['stream'].logger = logger
-            kwargs['stream'].debug = kwargs.pop('debug', False)
+        kwargs['stream'].logger = logger
+        kwargs['stream'].debug = kwargs.pop('debug', False)
 
         super(FalafelTestRunner, self).__init__(*args, **kwargs)
