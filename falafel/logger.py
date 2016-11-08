@@ -122,10 +122,11 @@ class Formatter(logging.Formatter):
 
         super(Formatter, self).__init__(*args, **kwargs)
 
-        if self.no_date:
-            self.datefmt = '%H:%M:%S.%f'
-        else:
-            self.datefmt = '%d %b %Y %H:%M:%S.%f'
+        if not self.no_datetime:
+            if self.no_date:
+                self.datefmt = '%H:%M:%S.%f'
+            else:
+                self.datefmt = '%d %b %Y %H:%M:%S.%f'
 
     def formatTime(self, record, datefmt=None):
         ct = self.converter(record.created)
