@@ -118,6 +118,8 @@ class Formatter(logging.Formatter):
 
         self.no_date = kwargs.pop('no_date', False)
 
+        self.logger_name_fmt = kwargs.pop('logger_name_fmt', "%(name)-6s")
+
         super(Formatter, self).__init__(*args, **kwargs)
 
         if self.no_date:
@@ -145,7 +147,8 @@ class Formatter(logging.Formatter):
         if not self.no_datetime:
             prefix += '[%(asctime)s] '
 
-        self._fmt = (prefix + "%(name)-6s" +
+        self._fmt = (prefix +
+                     self.logger_name_fmt +
                      self.pre.get(lvlno, ' unknown lvl') +
                      "%(message)s")
         if sys.version_info[0] > 2:
